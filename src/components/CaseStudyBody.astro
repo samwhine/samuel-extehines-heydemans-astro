@@ -1,0 +1,53 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+
+interface Props {
+  content: CollectionEntry<'projects'> | CollectionEntry<'projectSummaries'>;
+  mode: 'full' | 'tldr';
+}
+const { content, mode } = Astro.props;
+const { Content, headings } = await render(content);
+const sections = headings.filter((heading) => heading.depth === 2);
+for (const anchor of Object.keys(content.data.toc)) {
+  if (!sections.some((heading) => heading.slug === anchor)) {
+    throw new Error(`Unknown TOC anchor "${anchor}" in ${content.id} (${mode}).`);
+  }
+}
+---
+
+<div
+  class:list={['case-body', { 'case-body-no-toc': sections.length === 0 }]}
+  data-case-mode={mode}
+>
+  {sections.length > 0 && (
+    <aside class="toc">
+      <details open>
+        <summary>
+          On this page <span aria-hidden="true">⌄</span>
+        </summary>
+        <nav aria-label="Table of contents">
+          {sections.map((heading, i) => (
+            <a href={`#${heading.slug}`} data-toc-link>
+              <span>{String(i + 1).padStart(2, '0')}</span>
+              {content.data.toc[heading.slug] ?? heading.text}
+            </a>
+          ))}
+        </nav>
+      </details>
+    </aside>
+  )}
+  <div class="case-prose prose">
+    {content.data.readingTime && (
+      <p class="case-reading-time">
+        <span class="eyebrow">{mode === 'tldr' ? 'The overview' : 'The full story'}</span>
+        <span>{content.data.readingTime} read</span>
+      </p>
+    )}
+    <Content />
+    <a class="back-link article-back" href="/#work">
+      <Icon name="back" />
+      Back to selected work
+    </a>
+  </div>
+</div>

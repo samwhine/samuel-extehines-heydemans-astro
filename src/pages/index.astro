@@ -1,0 +1,93 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import CardStack from '../components/CardStack.astro';
+import ContactCards from '../components/ContactCards.astro';
+import { publicImage } from '../lib/public-images';
+import { site } from '../data/site';
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const technical = [
+  { title: 'WELL Ecosystem', description: 'Independent tools for media workflows, automation, and self-hosted operations.', href: 'https://github.com/samwhine', label: 'Explore GitHub' },
+  { title: 'Server Administration', description: 'Self-hosted infrastructure, Cloudflare Tunnel networking, and internal tooling for production workflows.', href: 'https://www.behance.net/gallery/254816347/Server-Administration', label: 'View infrastructure work' },
+  { title: 'LocatorControl', description: 'Ableton Live 11 MIDI Remote Script for locator-based transport control and live setlist management.', href: 'https://github.com/samwhine/Locator-Control-Ableton-11-Suite-Installer', label: 'View repository' },
+];
+---
+
+<Base>
+  <section id="hero" class="hero home-section" aria-labelledby="hero-heading">
+    <div class="hero-intro container">
+      <p class="availability"><span aria-hidden="true"></span>{site.availability}</p>
+      <h1 id="hero-heading">
+        <span class="hero-word">Creative</span>{' '}
+        <span class="hero-word">technologist</span>{' '}
+        <br class="desktop-break" />
+        <strong><span class="hero-word">with a</span>{' '}<span class="hero-word">creative</span>{' '}<span class="hero-word">pulse.</span></strong>
+      </h1>
+      <p class="hero-subtitle">Co-founder of The House Works, video editor, and builder of practical web products and self-hosted systems.</p>
+    </div>
+    <CardStack />
+    <div class="logo-conveyor" aria-label="Samuel's creative and technical focus">
+      <div class="logo-track">
+        {[0, 1].map((copy) => (
+          <div class="logo-group" aria-hidden={copy === 1 ? 'true' : undefined}>
+            {['VIDEO EDITING', '2D ANIMATION', 'WEB PRODUCTS', 'SELF-HOSTED SYSTEMS', 'CREATIVE TECHNOLOGY'].map((label) => <span class="conveyor-label">{label}</span>)}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="work" class="work-section home-section container" aria-labelledby="work-heading">
+    <h2 id="work-heading" class="section-title" data-reveal>Selected Creative Work</h2>
+    <p class="section-intro" data-reveal>Video editing, animation, and promotional content for artists, brands, and social platforms.</p>
+    <div class="work-grid">
+      {projects.map((project) => {
+        const cover = publicImage(project.data.cover);
+        return (
+          <a class="project-card" href={`/work/${project.id}/`} data-reveal>
+            <div class="project-cover">
+              {cover ? <Image src={cover} alt={`${project.data.title} project cover`} widths={[360, 480, 720, 960]} sizes="(max-width: 700px) calc(100vw - 48px), (max-width: 1000px) calc((100vw - 88px) / 2), 468px" width={960} loading="lazy" format="webp" /> : null}
+            </div>
+            <div class="project-copy">
+              <h3>{project.data.title}<span class="project-arrow" aria-hidden="true">↗</span></h3>
+              <p>{project.data.summary}</p>
+              <ul class="tags" aria-label="Project categories">{project.data.tags.map((tag) => <li>{tag}</li>)}</ul>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <section id="systems" class="quests-section home-section container" aria-labelledby="systems-heading">
+    <h2 id="systems-heading" class="section-title" data-reveal>Technical Systems &amp; Infrastructure</h2>
+    <p class="section-intro" data-reveal>Beyond the edit: web products, self-hosted tools, networking, and technical experiments.</p>
+    <div class="technical-grid">
+      {technical.map((item) => (
+        <a class="technical-card" href={item.href} target="_blank" rel="noopener noreferrer" data-reveal>
+          <span class="eyebrow">Technical / {item.title}</span>
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+          <span class="card-link">{item.label} ↗</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section id="about" class="now-page container" aria-labelledby="about-heading">
+    <div class="now-heading">
+      <h2 id="about-heading">A creative practice built across <strong>visuals, systems, and sound.</strong></h2>
+      <p>Based in Jakarta, Indonesia.</p>
+    </div>
+    <div class="now-copy prose">
+      <p>I am Samuel Extehines Heydemans, a Co-founder of The House Works and a Creative Technologist. My work moves between short-form editing, animation, web development, server administration, and self-hosted infrastructure.</p>
+      <p>Music also shapes how I think about rhythm, timing, dynamics, and pacing. I serve as a Music Director at GMS Kelapa Gading outside of my main creative and technical work.</p>
+    </div>
+  </section>
+
+  <section id="contact" class="contact-section home-section container" aria-labelledby="contact-heading">
+    <h2 id="contact-heading" data-reveal>Let’s make something <strong>useful and memorable.</strong></h2>
+    <ContactCards />
+  </section>
+</Base>

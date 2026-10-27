@@ -1,0 +1,14 @@
+---
+import { site, formatDate } from '../data/site';
+---
+
+<footer class="site-footer container">
+  <p>
+    © {new Date().getFullYear()} {site.name}
+    <span class="footer-divider">.</span>{' '}
+    <span class="footer-credit">Built using Figma, GPT-6, and a whole lot of human judgement</span>
+  </p>
+  <p>
+    Last updated <time datetime={site.updated}>{formatDate(site.updated)}</time>
+  </p>
+</footer>

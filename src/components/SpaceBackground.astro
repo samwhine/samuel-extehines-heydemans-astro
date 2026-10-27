@@ -1,0 +1,45 @@
+---
+// Cubic paths from the supplied space.svg. The lines and dots share each path.
+const orbits = [
+  {
+    path: 'M1136.13 246.893C1143.46 296.612 898.052 374.001 587.986 419.744C277.921 465.488 20.6165 462.265 13.2814 412.545C5.94629 362.825 251.358 285.437 561.423 239.693C871.489 193.95 1128.79 197.173 1136.13 246.893Z',
+    duration: 72,
+    phases: [0.45, 0.91],
+  },
+  {
+    path: 'M1129.09 452.786C1119.3 490.346 865.498 456.717 562.207 377.674C258.916 298.631 20.9852 204.107 30.7737 166.548C40.5623 128.989 294.363 162.618 597.654 241.66C900.945 320.703 1138.88 415.227 1129.09 452.786Z',
+    duration: 86,
+    phases: [0.08, 0.55],
+  },
+  {
+    path: 'M1001.67 125.449C1033.34 194.733 861.226 341.3 617.244 452.816C373.262 564.333 149.804 598.569 118.137 529.286C86.4693 460.002 258.584 313.435 502.566 201.918C746.548 90.4019 970.006 56.1654 1001.67 125.449Z',
+    duration: 96,
+    phases: [0.52, 0.94],
+  },
+];
+---
+
+<div class="space-background" aria-hidden="true">
+  <svg
+    class="space-artwork"
+    width="1150"
+    height="655"
+    viewBox="0 0 1150 655"
+    fill="none"
+    focusable="false"
+  >
+    {orbits.map(({ path, duration, phases }) => (
+      <g>
+        <path d={path} stroke="#B4B4B4" />
+        {phases.map((phase) => (
+          <circle
+            class="orbit-dot"
+            r="9"
+            fill="#B9DD75"
+            style={`offset-path: path('${path}'); --orbit-duration: ${duration}s; --orbit-delay: ${-duration * phase}s`}
+          />
+        ))}
+      </g>
+    ))}
+  </svg>
+</div>

@@ -1,0 +1,28 @@
+---
+import Icon from './Icon.astro';
+const items = [
+  { id: 'hero', icon: 'home', label: 'Home' },
+  { id: 'work', icon: 'work', label: 'Work' },
+  { id: 'quests', icon: 'quests', label: 'Quests' },
+  { id: 'contact', icon: 'contact', label: 'Let’s Talk' },
+];
+---
+
+<nav class="dock" aria-label="Home sections">
+  {items.map(({ id, icon, label }) => (
+    <a
+      href={`#${id}`}
+      data-section-link={id}
+      class:list={['dock-link', { active: id === 'hero' }]}
+      aria-current={id === 'hero' ? 'location' : undefined}
+      aria-label={label}
+    >
+      <Icon name={icon} class="inactive-icon" />
+      <Icon name={`${icon}-active`} class="active-icon" />
+      <span class:list={['dock-label', { 'home-label': id === 'hero' }]}>
+        <span>{label}</span>
+      </span>
+    </a>
+  ))}
+  <span class="dock-indicator" aria-hidden="true"></span>
+</nav>

@@ -1,0 +1,31 @@
+---
+import { site } from '../data/site';
+import Icon from './Icon.astro';
+---
+
+<div class="contact-cards" data-reveal>
+  <article class="contact-card email-card">
+    <h3>Send me an Email</h3>
+    <a class="card-button" href={`mailto:${site.email}`}>
+      {site.email}
+      <span class="button-arrow" aria-hidden="true">
+        ↗
+      </span>
+    </a>
+    <p>will respond within 24 hours or less</p>
+  </article>
+  <article class="contact-card linkedin-card">
+    <h3>
+      Message me
+      <br />
+      on LinkedIn
+    </h3>
+    <a class="card-button" href={site.links.linkedin} target="_blank" rel="noopener noreferrer">
+      <Icon name="linkedin" size={54} />
+      <span>
+        /in/samuel-extehines-heydemans<span class="sr-only"> (opens in a new tab)</span>
+      </span>
+    </a>
+    <p>will respond within 24 hours or less</p>
+  </article>
+</div>

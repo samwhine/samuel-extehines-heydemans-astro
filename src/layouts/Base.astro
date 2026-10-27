@@ -1,0 +1,136 @@
+---
+import '@fontsource-variable/sora';
+import '@fontsource-variable/hanken-grotesk';
+import '@fontsource-variable/hanken-grotesk/wght-italic.css';
+import '@fontsource/space-mono/400.css';
+import '@fontsource/space-mono/700.css';
+import '@fontsource/gloria-hallelujah/400.css';
+import headingFont from '@fontsource-variable/sora/files/sora-latin-wght-normal.woff2?url';
+import bodyFont from '@fontsource-variable/hanken-grotesk/files/hanken-grotesk-latin-wght-normal.woff2?url';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Dock from '../components/Dock.astro';
+import SpaceBackground from '../components/SpaceBackground.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+interface Props {
+  title?: string;
+  description?: string;
+  page?: 'home' | 'now' | 'work' | '404';
+  canonicalPath?: string;
+}
+const {
+  title = site.title,
+  description = site.description,
+  page = 'home',
+  canonicalPath = page === '404' ? '/404.html' : Astro.url.pathname,
+} = Astro.props;
+const siteUrl = Astro.site!.origin;
+const canonicalUrl = canonicalPath === '/' ? siteUrl : new URL(canonicalPath, siteUrl).href;
+const socialImage = new URL('/og-image.jpg', siteUrl).href;
+const socialImageAlt = 'Samuel Extehines Heydemans — Creative Technologist';
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': `${siteUrl}/#person`,
+      name: site.name,
+      url: siteUrl,
+      jobTitle: 'Co-founder, The House Works | Creative Technologist & Video Editor',
+      sameAs: [site.links.linkedin, site.links.behance, site.links.github, site.links.instagram, site.links.theHouseWorks],
+      memberOf: { '@type': 'Organization', name: 'The House Works', url: site.links.theHouseWorks },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteUrl}/#website`,
+      url: siteUrl,
+      name: site.name,
+      description: site.description,
+      inLanguage: 'en-US',
+      publisher: { '@id': `${siteUrl}/#person` },
+    },
+    {
+      '@type': page === 'home' ? 'ProfilePage' : 'WebPage',
+      '@id': `${canonicalUrl}#webpage`,
+      url: canonicalUrl,
+      name: title,
+      description,
+      inLanguage: 'en-US',
+      isPartOf: { '@id': `${siteUrl}/#website` },
+      about: { '@id': `${siteUrl}/#person` },
+      ...(page === 'home' && { mainEntity: { '@id': `${siteUrl}/#person` } }),
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en" data-page={page} data-section={page === 'home' ? 'hero' : page}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <link rel="preload" href={headingFont} as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin="anonymous" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#FAFEF5" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={socialImageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    <meta name="twitter:image:alt" content={socialImageAlt} />
+    <link rel="icon" type="image/x-icon" sizes="any" href="/favicon/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <script is:inline type="application/ld+json" data-structured-data set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')} />
+    <script is:inline>
+      const root = document.documentElement;
+      const prefersReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      root.dataset.motion = prefersReducedMotion ? 'paused' : 'running';
+      try {
+        root.dataset.motion = prefersReducedMotion || localStorage.getItem('portfolio-motion') === 'paused' ? 'paused' : 'running';
+      } catch {}
+      if (root.dataset.motion === 'running') root.dataset.pageEnter = 'true';
+      try {
+        if (root.dataset.page === 'home' && !location.hash && !sessionStorage.getItem('portfolio-intro') && !prefersReducedMotion && root.dataset.motion !== 'paused') root.dataset.intro = 'enter';
+        if (root.dataset.page === 'home') sessionStorage.setItem('portfolio-intro', 'seen');
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <SpaceBackground />
+    <Header current={page} />
+    <main id="main-content" tabindex="-1"><slot /></main>
+    <Footer />
+    {page === 'home' && <Dock />}
+    {page === 'work' ? (
+      <button class="back-to-top" type="button" aria-label="Back to top"><Icon name="arrow-up" size={18} /><span>Back to Top</span></button>
+    ) : (
+      <button class="motion-toggle" type="button" aria-pressed="false" aria-label="Pause site animations">
+        <Icon name="pause" size={14} class="motion-toggle-symbol control-pause-icon" />
+        <Icon name="play" size={14} class="motion-toggle-symbol control-play-icon" />
+        <span class="motion-toggle-label">Pause motion</span>
+      </button>
+    )}
+    <script>import '../scripts/site';</script>
+  </body>
+</html>

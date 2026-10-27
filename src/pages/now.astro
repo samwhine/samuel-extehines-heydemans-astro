@@ -1,0 +1,41 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ContactCards from '../components/ContactCards.astro';
+import Icon from '../components/Icon.astro';
+import { site, formatDate } from '../data/site';
+const entry = await getEntry('now', 'update');
+if (!entry) throw new Error('Now content is missing.');
+const { Content } = await render(entry);
+---
+
+<Base
+  page="now"
+  title="Now — Samuel Extehines Heydemans"
+  description="What Samuel Extehines Heydemans is building across creative production, technical systems, and music."
+>
+  <section class="now-page container">
+    <div class="now-heading">
+      <h1>
+        What I’m up to <strong>these days</strong>
+      </h1>
+      <p>
+        Last updated: <time datetime={entry.data.updated}>{formatDate(entry.data.updated)}</time>
+      </p>
+    </div>
+    <div class="now-grid">
+      <div class="now-copy prose">
+        <Content />
+      </div>
+      <div class="now-gallery">
+        <p class="eyebrow">Current practice</p>
+        <p class="now-gallery-note">Creative production, technical systems, music, and the independent tools in between.</p>
+        <a class="primary-button" href={site.links.github} target="_blank" rel="noopener noreferrer">
+          Explore my GitHub <Icon name="github" />
+          <span class="sr-only"> (opens in a new tab)</span>
+        </a>
+      </div>
+    </div>
+    <ContactCards />
+  </section>
+</Base>

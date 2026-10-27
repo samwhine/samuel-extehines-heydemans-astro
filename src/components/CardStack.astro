@@ -1,0 +1,255 @@
+---
+import { Image } from 'astro:assets';
+import portrait from '../assets/portraits/profile-photo.png';
+import avatar from '../assets/portraits/avatar.png';
+import { gallery } from '../data/gallery';
+import { site } from '../data/site';
+import Icon from './Icon.astro';
+interface Props {
+  variant?: 'hero' | 'gallery';
+}
+const { variant = 'hero' } = Astro.props;
+const title = variant === 'hero' ? 'A little more about me' : 'Life lately, in photographs';
+const labels =
+  variant === 'hero'
+    ? ['Portrait', 'World clocks', 'Testimonial', 'Where I write', 'My socials']
+    : gallery.map((item) => item.caption);
+const socials = [
+  { name: 'instagram', label: 'Instagram', href: site.links.instagram },
+  { name: 'github', label: 'GitHub', href: site.links.github },
+  { name: 'linkedin', label: 'LinkedIn', href: site.links.linkedin },
+];
+---
+
+<section
+  class:list={['card-stack', `${variant}-stack`]}
+  data-card-stack
+  data-variant={variant}
+  aria-label={title}
+  aria-roledescription="carousel"
+>
+  <div class="stack-stage">
+    {variant === 'hero' ? (
+      <>
+        <article
+          class="stack-card photo-card"
+          data-card
+          data-label="Portrait"
+          data-position="0"
+          aria-label="1 of 5 — Portrait"
+          aria-roledescription="slide"
+        >
+          <Image
+            src={portrait}
+            widths={[360, 540, 720]}
+            sizes="(max-width: 600px) 82vw, 330px"
+            width={660}
+            height={760}
+            fit="cover"
+            position="center"
+            alt="Samuel Extehines Heydemans, Creative Technologist"
+            loading="eager"
+            fetchpriority="high"
+          />
+          <p class="handwritten">Hey, nice to have you here</p>
+        </article>
+        <article
+          class="stack-card clock-card"
+          data-card
+          data-label="World clocks"
+          data-position="1"
+          aria-label="2 of 5 — World clocks"
+          aria-roledescription="slide"
+          inert
+          aria-hidden="true"
+        >
+          <div class="clock-panel">
+            <p>Right now it’s</p>
+            <div class="clock-digits" data-clock="jakarta">
+              <span data-time-main>--:--</span>
+              <span class="clock-seconds" data-time-seconds>
+                :--
+              </span>
+              <span class="clock-period" data-time-period></span>
+            </div>
+            <p class="clock-date" data-clock-date="jakarta">
+              Jakarta · UTC+7
+            </p>
+            <h3>in Jakarta, Indonesia</h3>
+          </div>
+          <div class="clock-panel visitor-panel">
+            <p>And where you are</p>
+            <div class="clock-digits" data-clock="visitor">
+              <span data-time-main>--:--</span>
+              <span class="clock-seconds" data-time-seconds>
+                :--
+              </span>
+              <span class="clock-period" data-time-period></span>
+            </div>
+            <p class="clock-date" data-clock-date="visitor">
+              Your local date
+            </p>
+            <h3>
+              Your local time <span data-visitor-zone></span>
+            </h3>
+          </div>
+        </article>
+        <article
+          class="stack-card testimonial-card"
+          data-card
+          data-label="Testimonial"
+          data-position="2"
+          aria-label="3 of 5 — Testimonial"
+          aria-roledescription="slide"
+          inert
+          aria-hidden="true"
+        >
+          <Image src={avatar} width={72} height={72} alt="Samuel Extehines Heydemans" loading="lazy" />
+          <blockquote>{site.testimonial.quote}</blockquote>
+          <div>
+            <h3>{site.testimonial.name}</h3>
+            <p>{site.testimonial.role}</p>
+          </div>
+        </article>
+        <article
+          class="stack-card writing-card"
+          data-card
+          data-label="Where I write"
+          data-position="3"
+          aria-label="4 of 5 — Where I write"
+          aria-roledescription="slide"
+          inert
+          aria-hidden="true"
+        >
+          <h3>Where I build</h3>
+          <p class="card-subtitle">(and collaborate)</p>
+          <a
+            href={site.links.github}
+            class="writing-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon name="github" size={64} />
+            <span>
+              <strong>GitHub</strong>
+              <span>Technical projects</span>
+              <span class="sr-only"> (opens in a new tab)</span>
+            </span>
+          </a>
+          <a
+            href={site.links.theHouseWorks}
+            class="writing-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon name="live-link" size={64} />
+            <span>
+              <strong>The House Works</strong>
+              <span>Creative business</span>
+              <span class="sr-only"> (opens in a new tab)</span>
+            </span>
+          </a>
+        </article>
+        <article
+          class="stack-card social-card"
+          data-card
+          data-label="My socials"
+          data-position="4"
+          aria-label="5 of 5 — My socials"
+          aria-roledescription="slide"
+          inert
+          aria-hidden="true"
+        >
+          <h3>My socials</h3>
+          <a
+            class="social-link linkedin-social"
+            href={site.links.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon name="linkedin" size={54} />
+            <span>
+              /in/samuel-extehines-heydemans<span class="sr-only"> (opens in a new tab)</span>
+            </span>
+          </a>
+          <div class="social-grid">
+            {socials.map((item) =>
+              item.href ? (
+                <a
+                  class="social-link"
+                  href={item.href}
+                  aria-label={item.label}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icon name={item.name} size={50} />
+                </a>
+              ) : (
+                <span
+                  class="social-link social-placeholder"
+                  aria-label={`${item.label} — coming soon`}
+                >
+                  <Icon name={item.name} size={42} />
+                  <small>Coming soon</small>
+                </span>
+              ),
+            )}
+          </div>
+        </article>
+      </>
+    ) : (
+      gallery.map((item, i) => (
+        <article
+          class="stack-card photo-card gallery-card"
+          data-card
+          data-label={item.caption}
+          data-position={i}
+          aria-label={`${i + 1} of ${gallery.length} — ${item.caption}`}
+          aria-roledescription="slide"
+          inert={i > 0}
+          aria-hidden={i > 0 ? 'true' : undefined}
+        >
+          <Image
+            src={item.image}
+            widths={[360, 540, 720]}
+            sizes="(max-width: 600px) 82vw, 330px"
+            width={660}
+            height={760}
+            fit="cover"
+            alt={item.alt}
+            loading={i === 0 ? 'eager' : 'lazy'}
+          />
+          <p class="handwritten">{item.caption}</p>
+        </article>
+      ))
+    )}
+  </div>
+  <div class="stack-controls">
+    <button
+      type="button"
+      data-shuffle
+      aria-label={`Shuffle ${variant === 'hero' ? 'hero cards' : 'photos'}`}
+    >
+      <Icon name="shuffle" size={14} /> Shuffle
+    </button>
+    <span class="stack-count" aria-hidden="true">
+      <span data-card-index>1</span> / {labels.length}
+    </span>
+    <button
+      type="button"
+      data-stack-pause
+      aria-label="Pause automatic card shuffling"
+      aria-pressed="false"
+    >
+      <Icon name="pause" size={14} class="control-pause-icon" />
+      <Icon name="play" size={14} class="control-play-icon" />
+      <span data-pause-label>Pause</span>
+    </button>
+  </div>
+  <p class="sr-only" data-stack-status aria-live="polite" aria-atomic="true"></p>
+  <noscript>
+    <p class="stack-fallback">
+      Enable JavaScript to shuffle through the {variant === 'hero' ? 'cards' : 'photos'}.
+    </p>
+  </noscript>
+</section>

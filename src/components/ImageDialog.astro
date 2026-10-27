@@ -1,0 +1,10 @@
+---
+import Icon from './Icon.astro';
+---
+
+<dialog class="quest-dialog image-dialog" data-image-dialog aria-label="Image preview">
+  <button class="dialog-close" type="button" data-dialog-close aria-label="Close image" autofocus>
+    <Icon name="mobile-menu-opened" />
+  </button>
+  <img class="image-dialog-image" data-zoomed-image alt="" draggable="false" />
+</dialog>

@@ -1,0 +1,30 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  slug: string;
+  title: string;
+  mode: 'full' | 'tldr';
+}
+const { slug, title, mode } = Astro.props;
+const versions = [
+  { id: 'tldr', label: 'TL;DR Version', href: `/work/${slug}/` },
+  { id: 'full', label: 'Full Case Study', href: `/work/${slug}/full/` },
+];
+---
+
+<nav class="case-toggle" aria-label="Case study version" data-case-toggle data-mode={mode}>
+  {versions.map(({ id, label, href }) => (
+    <a
+      class="case-toggle-link"
+      href={href}
+      data-case-version={id}
+      data-page-title={`${title}${id === 'tldr' ? ' — TL;DR' : ''} — Samuel Extehines Heydemans`}
+      aria-current={mode === id ? 'page' : undefined}
+    >
+      <Icon name={`case-${id}-default`} size={18} class="inactive-icon" />
+      <Icon name={`case-${id}-selected`} size={18} class="active-icon" />
+      <span>{label}</span>
+    </a>
+  ))}
+</nav>
